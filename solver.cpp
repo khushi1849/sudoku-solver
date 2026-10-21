@@ -26,18 +26,29 @@ void removeVal(int r, int c, int v) {
 }
 
 bool solve() {
+    int bestR = -1, bestC = -1, bestCnt = 10;
     for (int r = 0; r < 9; r++)
         for (int c = 0; c < 9; c++)
             if (g[r][c] == 0) {
+                int used = rowMask[r] | colMask[c] | boxMask[r/3*3 + c/3];
+                int cnt = 0;
                 for (int v = 1; v <= 9; v++)
-                    if (ok(r, c, v)) {
-                        place(r, c, v);
-                        if (solve()) return true;
-                        removeVal(r, c, v);
-                    }
-                return false;
+                    if (!(used & (1 << v))) cnt++;
+                if (cnt < bestCnt) {
+                    bestCnt = cnt;
+                    bestR = r;
+                    bestC = c;
+                }
             }
-    return true;
+    if (bestR == -1) return true;
+    if (bestCnt == 0) return false;
+    for (int v = 1; v <= 9; v++)
+        if (ok(bestR, bestC, v)) {
+            place(bestR, bestC, v);
+            if (solve()) return true;
+            removeVal(bestR, bestC, v);
+        }
+    return false;
 }
 
 int main() {
