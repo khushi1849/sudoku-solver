@@ -2,13 +2,27 @@
 using namespace std;
 
 int g[9][9];
+int rowMask[9], colMask[9], boxMask[9];
 
 bool ok(int r, int c, int v) {
-    for (int i = 0; i < 9; i++) {
-        if (g[r][i] == v || g[i][c] == v) return false;
-        if (g[r/3*3 + i/3][c/3*3 + i%3] == v) return false;
-    }
-    return true;
+    int bit = 1 << v;
+    return !((rowMask[r] | colMask[c] | boxMask[r/3*3 + c/3]) & bit);
+}
+
+void place(int r, int c, int v) {
+    int bit = 1 << v;
+    g[r][c] = v;
+    rowMask[r] |= bit;
+    colMask[c] |= bit;
+    boxMask[r/3*3 + c/3] |= bit;
+}
+
+void removeVal(int r, int c, int v) {
+    int bit = 1 << v;
+    g[r][c] = 0;
+    rowMask[r] &= ~bit;
+    colMask[c] &= ~bit;
+    boxMask[r/3*3 + c/3] &= ~bit;
 }
 
 bool solve() {
@@ -17,9 +31,9 @@ bool solve() {
             if (g[r][c] == 0) {
                 for (int v = 1; v <= 9; v++)
                     if (ok(r, c, v)) {
-                        g[r][c] = v;
+                        place(r, c, v);
                         if (solve()) return true;
-                        g[r][c] = 0;
+                        removeVal(r, c, v);
                     }
                 return false;
             }
@@ -28,7 +42,11 @@ bool solve() {
 
 int main() {
     for (int i = 0; i < 9; i++)
-        for (int j = 0; j < 9; j++) cin >> g[i][j];
+        for (int j = 0; j < 9; j++) {
+            int x;
+            cin >> x;
+            if (x != 0) place(i, j, x);
+        }
     if (solve()) {
         for (auto& row : g) {
             for (int x : row) cout << x << " ";
