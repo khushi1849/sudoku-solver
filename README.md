@@ -30,3 +30,18 @@ g++ solver.cpp -o solver
 
 ## Output
 The solved grid, or `No solution` if the puzzle is unsolvable.
+## Benchmarks
+
+Tested on one hard puzzle (`hard.txt`), compiled with `g++ -O2`.
+Times are for a single run on my laptop, so they vary a little between runs.
+
+| Version | Time |
+|---|---|
+| Naive backtracking | 4.44 ms |
+| Bitmask | 1.45 ms |
+| Bitmask + MRV | 5.61 ms |
+
+MRV did not help on this puzzle because scanning all empty cells at every
+step costs more than it saves here. It may do better on other puzzles.
+
+Code for each version is in the `versions/` folder.
