@@ -6,6 +6,7 @@ A Sudoku solver in C++ using backtracking.
 For each empty cell (0), the solver tries digits 1-9. If a digit is valid
 (no repeat in the row, column or 3x3 box), it places it and moves on.
 If it gets stuck, it backtracks and tries the next digit.
+
 The final `solver.cpp` uses bitmasks for O(1) validity checks and the MRV
 heuristic (fill the cell with the fewest valid options first).
 
